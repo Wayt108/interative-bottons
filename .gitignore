@@ -1,24 +1,108 @@
-# Compiled class file
-*.class
+// Obter os elementos da página
+var selectMes = document.getElementById("mes");
+var selectAno = document.getElementById("ano");
+var tabela = document.getElementById("calendario");
+var titulo = document.getElementById("titulo");
 
-# Log file
-*.log
+// Criar um objeto Date com a data atual
+var dataAtual = new Date();
 
-# BlueJ files
-*.ctxt
+// Obter o mês e o ano atuais
+var mesAtual = dataAtual.getMonth();
+var anoAtual = dataAtual.getFullYear();
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
+// Preencher os elementos select com os meses e os anos
+var meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+for (var i = 0; i < meses.length; i++) {
+  var option = document.createElement("option");
+  option.value = i;
+  option.text = meses[i];
+  if (i == mesAtual) {
+    option.selected = true;
+  }
+  selectMes.appendChild(option);
+}
 
-# Package Files #
-*.jar
-*.war
-*.nar
-*.ear
-*.zip
-*.tar.gz
-*.rar
+for (var i = anoAtual - 10; i <= anoAtual + 10; i++) {
+  var option = document.createElement("option");
+  option.value = i;
+  option.text = i;
+  if (i == anoAtual) {
+    option.selected = true;
+  }
+  selectAno.appendChild(option);
+}
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
-replay_pid*
+// Criar uma função que gera o calendário de um determinado mês e ano
+function gerarCalendario(mes, ano) {
+  // Limpar a tabela do calendário
+  tabela.innerHTML = "";
+
+  // Criar o cabeçalho da tabela com os dias da semana
+  var cabecalho = document.createElement("tr");
+  var dias = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+  for (var i = 0; i < dias.length; i++) {
+    var celula = document.createElement("th");
+    celula.textContent = dias[i];
+    cabecalho.appendChild(celula);
+  }
+  tabela.appendChild(cabecalho);
+
+  // Criar um objeto Date com o primeiro dia do mês e ano
+  var primeiroDia = new Date(ano, mes, 1);
+
+  // Obter o índice do primeiro dia da semana (0 a 6)
+  var indicePrimeiroDia = primeiroDia.getDay();
+
+  // Criar um objeto Date com o último dia do mês e ano
+  var ultimoDia = new Date(ano, mes + 1, 0);
+
+  // Obter o número do último dia do mês (1 a 31)
+  var numeroUltimoDia = ultimoDia.getDate();
+
+  // Criar um array para armazenar os dias do calendário
+  var diasCalendario = [];
+
+  // Preencher o array com espaços vazios até o índice do primeiro dia
+  for (var i = 0; i < indicePrimeiroDia; i++) {
+    diasCalendario.push("");
+  }
+
+  // Preencher o array com os números dos dias até o último dia
+  for (var i = 1; i <= numeroUltimoDia; i++) {
+    diasCalendario.push(i);
+  }
+
+  // Preencher o array com espaços vazios até completar um múltiplo de sete
+  while (diasCalendario.length % 7 != 0) {
+    diasCalendario.push("");
+  }
+
+  // Criar as linhas da tabela com os dias do calendário
+  for (var i = 0; i < diasCalendario.length / 7; i++) {
+    var linha = document.createElement("tr");
+    for (var j = 0; j < 7; j++) {
+      var celula = document.createElement("td");
+      celula.textContent = diasCalendario[i * 7 + j];
+      linha.appendChild(celula);
+    }
+    tabela.appendChild(linha);
+    
+  }
+  
+  
+}  
+
+
+gerarCalendario(mesAtual, anoAtual)
+
+titulo.textContent = meses[mesAtual] + "de" + anoAtual;
+
+selectMes.addEventListener("change", function() {
+    
+    var mes = parseInt(this.value);
+    
+     gerarCalendario(mes, anoAtual);
+    
+    titulo.textcontent = meses[mes] + "de" + anoAtual;
+});
